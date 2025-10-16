@@ -1,0 +1,3 @@
+[build]
+# This buildpack will install Google Chrome and chromedriver
+buildpacks = ["https://github.com/zeabur/chrome-buildpack"]
