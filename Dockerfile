@@ -5,11 +5,13 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies, including gnupg (which provides gpg), curl, and tools for Chrome
+# This is the NEW, CORRECTED code
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     wget \
     unzip \
+    jq \
     --no-install-recommends
 
 # Add Google's official GPG key
