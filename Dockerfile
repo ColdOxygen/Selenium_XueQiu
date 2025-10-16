@@ -24,23 +24,23 @@ RUN apt-get update && apt-get install -y \
     google-chrome-stable \
     --no-install-recommends
 
-# --- START: IMPROVED CHROMEDRIVER INSTALL ---
 # Use the new JSON endpoints from Google to get the latest stable chromedriver
 RUN LATEST_STABLE_URL=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json | jq -r '.channels.Stable.downloads.chromedriver[] | select(.platform=="linux64") | .url') && \
     wget -O /tmp/chromedriver.zip $LATEST_STABLE_URL && \
     unzip /tmp/chromedriver.zip -d /tmp && \
     mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ && \
     rm -rf /tmp/chromedriver.zip /tmp/chromedriver-linux64
-# --- END: IMPROVED CHROMEDRIVER INSTALL ---
 
-# Copy the dependencies file to the working directory
-COPY requirements.txt .
+# --- START: OPTIMIZED FILE COPY ---
+# 1. Copy only the requirements file first to leverage Docker cache
+COPY requirements.txt ./
 
-# Install any needed packages specified in requirements.txt
+# 2. Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the content of the local src directory to the working directory
+# 3. Copy the rest of the application code
 COPY . .
+# --- END: OPTIMIZED FILE COPY ---
 
-# Command to run on container start
-CMD ["python", "Xueqiu-user-status.py"]
+# Command to run on container start, using your new filename
+CMD ["python", "Xueqiu-user-status-API.py"]
